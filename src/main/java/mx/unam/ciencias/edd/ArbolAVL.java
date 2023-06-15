@@ -22,7 +22,7 @@ public class ArbolAVL<T extends Comparable<T>>
          * @param elemento el elemento del vértice.
          */
         public VerticeAVL(T elemento) {
-            // Aquí va su código.
+            super(elemento);
         }
 
         /**
@@ -30,7 +30,7 @@ public class ArbolAVL<T extends Comparable<T>>
          * @return la altura del vértice.
          */
         @Override public int altura() {
-            // Aquí va su código.
+            return altura;
         }
 
         /**
@@ -38,7 +38,7 @@ public class ArbolAVL<T extends Comparable<T>>
          * @return una representación en cadena del vértice AVL.
          */
         @Override public String toString() {
-            // Aquí va su código.
+            return elemento.toString() + " " + altura+"/"+balance(this);
         }
 
         /**
@@ -55,7 +55,9 @@ public class ArbolAVL<T extends Comparable<T>>
             if (objeto == null || getClass() != objeto.getClass())
                 return false;
             @SuppressWarnings("unchecked") VerticeAVL vertice = (VerticeAVL)objeto;
-            // Aquí va su código.
+            if(vertice.altura != this.altura)
+                return false;
+            return super.equals(vertice);
         }
     }
 
@@ -80,7 +82,7 @@ public class ArbolAVL<T extends Comparable<T>>
      * @return un nuevo vértice con el elemento recibido dentro del mismo.
      */
     @Override protected Vertice nuevoVertice(T elemento) {
-        // Aquí va su código.
+        return new VerticeAVL(elemento);
     }
 
     /**
@@ -90,7 +92,8 @@ public class ArbolAVL<T extends Comparable<T>>
      * @param elemento el elemento a agregar.
      */
     @Override public void agrega(T elemento) {
-        // Aquí va su código.
+        super.agrega(elemento);
+        rebalancea((VerticeAVL)ultimoAgregado.padre);
     }
 
     /**
@@ -99,7 +102,67 @@ public class ArbolAVL<T extends Comparable<T>>
      * @param elemento el elemento a eliminar del árbol.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+        VerticeAVL eliminar = (VerticeAVL)busca(elemento);
+        if(eliminar == null)
+            return;
+
+        if(eliminar.derecho != null && eliminar.izquierdo != null){
+            eliminar = (VerticeAVL)intercambiaEliminable(eliminar);
+        }
+        
+        eliminaVertice(eliminar);
+        rebalancea((VerticeAVL)eliminar.padre);
+    }
+
+    private void rebalancea(VerticeAVL v) {
+        if(v == null)
+            return;
+
+        v.altura = max(h(v.izquierdo), h(v.derecho)) + 1;
+
+        if(balance(v) == -2) {
+            VerticeAVL q = (VerticeAVL)v.derecho;
+            if(balance(q) == 1) {
+                super.giraDerecha(q);
+                q.altura = max(h(q.izquierdo), h(q.derecho)) + 1;
+            }
+            super.giraIzquierda(v);
+            v.altura = max(h(v.izquierdo), h(v.derecho)) + 1;
+        }
+        if(balance(v) == 2) {
+            VerticeAVL p = (VerticeAVL)v.izquierdo;
+            if(balance(p) == -1) {
+                super.giraIzquierda(p);
+                p.altura = max(h(p.izquierdo), h(p.derecho)) + 1;
+            }
+            super.giraDerecha(v);
+            v.altura = max(h(v.izquierdo), h(v.derecho)) + 1;
+        }
+
+        rebalancea((VerticeAVL)v.padre);
+    }
+
+    /**
+     * Regresa el máximo de dos elementos
+     * @param a
+     * @param b
+     * @return el máximo de dos elementos
+     */
+    private int max(int a, int b) {
+        if(a >= b)
+            return a;
+        return b;
+    }
+
+    private int h(Vertice v) {
+        if(v == null)
+            return -1;
+
+        return ((VerticeAVL)v).altura;
+    }
+
+    private int balance(VerticeAVL v) {
+        return h(v.izquierdo) - h(v.derecho);
     }
 
     /**

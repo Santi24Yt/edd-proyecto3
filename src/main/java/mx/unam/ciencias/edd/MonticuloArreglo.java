@@ -37,7 +37,14 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      * @param n el número de elementos en el iterable.
      */
     public MonticuloArreglo(Iterable<T> iterable, int n) {
-        // Aquí va su código.
+        arreglo = nuevoArreglo(n);
+        elementos = n;
+        int i = 0;
+        for(T e : iterable) {
+            e.setIndice(i);
+            arreglo[i] = e;
+            i++;
+        }
     }
 
     /**
@@ -46,7 +53,22 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      * @throws IllegalStateException si el montículo es vacío.
      */
     @Override public T elimina() {
-        // Aquí va su código.
+        if(elementos == 0)
+            throw new IllegalStateException("El montículo es vacío");
+        int min = 0;
+        for(int i = 0; i < arreglo.length; i++) {
+            if(arreglo[min] == null) {
+                min = i;
+                continue;
+            }
+            if(arreglo[i] != null && arreglo[i].compareTo(arreglo[min]) < 0)
+                min = i;
+        }
+        T r = arreglo[min];
+        arreglo[min].setIndice(-1);
+        arreglo[min] = null;
+        elementos--;
+        return r;
     }
 
     /**
@@ -57,7 +79,9 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      *         que el número de elementos.
      */
     @Override public T get(int i) {
-        // Aquí va su código.
+        if(i < 0 || i >= elementos)
+            throw new NoSuchElementException("El indice debe ser mayor a cero y menor que el número de elementos");
+        return arreglo[i];
     }
 
     /**
@@ -66,7 +90,7 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      *         <code>false</code> en otro caso.
      */
     @Override public boolean esVacia() {
-        // Aquí va su código.
+        return elementos == 0;
     }
 
     /**
@@ -74,6 +98,6 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      * @return el número de elementos en el montículo.
      */
     @Override public int getElementos() {
-        // Aquí va su código.
+        return elementos;
     }
 }

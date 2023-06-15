@@ -1,6 +1,7 @@
 package mx.unam.ciencias.edd;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * <p>Clase para árboles binarios completos.</p>
@@ -18,17 +19,27 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
 
         /* Inicializa al iterador. */
         private Iterador() {
-            // Aquí va su código.
+            if(raiz != null) {
+                cola = new Cola<Vertice>();
+                cola.mete(raiz);
+            }
         }
 
         /* Nos dice si hay un elemento siguiente. */
         @Override public boolean hasNext() {
-            // Aquí va su código.
+            return cola != null && !cola.esVacia();
         }
 
         /* Regresa el siguiente elemento en orden BFS. */
         @Override public T next() {
-            // Aquí va su código.
+            if(cola == null)
+                throw new NoSuchElementException("No hay elemento siguiente");
+            Vertice actual = cola.saca();
+            if(actual.izquierdo != null)
+                cola.mete(actual.izquierdo);
+            if(actual.derecho != null)
+                cola.mete(actual.derecho);
+            return actual.elemento;
         }
     }
 
@@ -56,7 +67,50 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      *         <code>null</code>.
      */
     @Override public void agrega(T elemento) {
-        // Aquí va su código.
+        if(elemento == null)
+            throw new IllegalArgumentException("El elemento no puede ser null");
+        Vertice nuevo = new Vertice(elemento);
+        if(raiz == null) {
+            raiz = nuevo;
+            elementos++;
+            return;
+        }
+        int h = (altura())+1-1;
+        int n = (elementos)+1-1;
+        Vertice actual = raiz;
+        //System.out.println("Intentando añadir elemento: "+elemento+" Altura: "+h+" Elementos: "+n+" d1: "+(((1 << h) - 1) + (1 << (h-1))));
+        while(h >= 0) {
+            int d = ((1 << h) - 1) + (1 << (h-1));
+            if(actual.izquierdo == null) {
+                nuevo.padre = actual;
+                actual.izquierdo = nuevo;
+                elementos++;
+                break;
+            }
+            if(actual.derecho == null) {
+                nuevo.padre = actual;
+                actual.derecho = nuevo;
+                elementos++;
+                break;
+            }
+            //System.out.println("d: "+d+" n: "+n+" :: "+n+" < "+d);
+
+            if(n == (1 << h+1)-1) {
+                actual = actual.izquierdo;
+            }else{
+                if(n < d) {
+                    //System.out.println("-izquierdo");
+                    actual = actual.izquierdo;
+                    n -= 1 << h-1;
+                    h--;
+                }else{
+                    //System.out.println("-derecho");
+                    actual = actual.derecho;
+                    n -= 1 << h;
+                    h--;
+                }
+            }
+        }
     }
 
     /**
@@ -66,7 +120,44 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @param elemento el elemento a eliminar.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+        Vertice v = vertice(busca(elemento));
+        Vertice u = ultimo();
+        if(v == null || u == null)
+            return;
+        if(elementos == 1)
+        {
+            elementos--;
+            raiz = null;
+            return;
+        }
+        v.elemento = u.elemento;
+        if(u.padre.derecho == u) {
+            u.padre.derecho = null;
+        }else{
+            u.padre.izquierdo = null;
+        }
+        //u.padre = null;
+        elementos--;
+    }
+
+    /**
+     * Devuelve el último vértice por bfs
+     * @return el último vértice por bfs
+     */
+    private Vertice ultimo() {
+        if(raiz == null)
+            return null;
+        Cola<Vertice> c = new Cola<Vertice>();
+        c.mete(raiz);
+        Vertice v = null;
+        while(!c.esVacia()) {
+            v = c.saca();
+            if(v.izquierdo != null)
+                c.mete(v.izquierdo);
+            if(v.derecho != null)
+                c.mete(v.derecho);
+        }
+        return v;
     }
 
     /**
@@ -75,7 +166,23 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @return la altura del árbol.
      */
     @Override public int altura() {
-        // Aquí va su código.
+        if(raiz == null)
+            return -1;
+        return log2floor(elementos);
+    }
+
+    /**
+     * Devuelve el piso de logaritmo base 2 de n
+     * @param n
+     * @return el piso del logaritmo base 2 de n
+     */
+    private int log2floor(int n) {
+        int r = 0;
+        while(n > 1) {
+            n >>= 1;
+            r++;
+        }
+        return r;
     }
 
     /**
@@ -84,7 +191,18 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @param accion la acción a realizar en cada elemento del árbol.
      */
     public void bfs(AccionVerticeArbolBinario<T> accion) {
-        // Aquí va su código.
+        if(raiz == null)
+            return;
+        Cola<Vertice> c = new Cola<Vertice>();
+        c.mete(raiz);
+        while(!c.esVacia()) {
+            Vertice v = c.saca();
+            accion.actua(v);
+            if(v.izquierdo != null)
+                c.mete(v.izquierdo);
+            if(v.derecho != null)
+                c.mete(v.derecho);
+        }
     }
 
     /**
