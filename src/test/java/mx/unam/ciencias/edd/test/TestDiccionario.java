@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import mx.unam.ciencias.edd.AlgoritmoDispersor;
-import mx.unam.ciencias.edd.Arreglos;
 import mx.unam.ciencias.edd.Diccionario;
 import mx.unam.ciencias.edd.Dispersor;
 import mx.unam.ciencias.edd.FabricaDispersores;

@@ -4,20 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>mx.unam.ciencias.edd</groupId>
-  <artifactId>practica</artifactId>
+  <groupId>mx.unam.ciencias.edd.proyecto3</groupId>
+  <artifactId>proyecto3</artifactId>
   <version>EDD</version>
   <packaging>jar</packaging>
 
-  <name>Práctica 11</name>
+  <name>Proyecto 3</name>
   <description>
-    Práctica 11 de Estructuras de Datos: Conjuntos y gráficas mejoradas.
+    Proyecto 3: Generar y resolver laberintos
   </description>
-  <url>https://aztlan.fciencias.unam.mx/gitlab/2023-2-edd/practica11</url>
-  <organization>
-    <name>Canek Peláez Valdés</name>
-    <url>https://aztlan.fciencias.unam.mx/~canek/</url>
-  </organization>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -69,7 +64,7 @@
 	<configuration>
 	  <archive>
 	    <manifest>
-	      <mainClass>mx.unam.ciencias.edd.Practica11</mainClass>
+	      <mainClass>mx.unam.ciencias.edd.proyecto3.Proyecto3</mainClass>
 	    </manifest>
 	  </archive>
 	</configuration>
@@ -89,7 +84,7 @@
 
     </plugins>
 
-    <finalName>practica11</finalName>
+    <finalName>proyecto3</finalName>
   </build>
 
   <reporting>

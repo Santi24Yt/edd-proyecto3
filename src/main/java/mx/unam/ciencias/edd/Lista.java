@@ -364,11 +364,20 @@ public class Lista<T> implements Coleccion<T> {
     public T get(int i) {
         if (i < 0 || i >= longitud)
             throw new ExcepcionIndiceInvalido("El indice debe ser menor a la longitud de la lista");
-        Nodo actual = cabeza;
-        for (int k = 0; k < i; k++) {
-            actual = actual.siguiente;
+        if(i <= longitud/2)
+        {
+            Nodo actual = cabeza;
+            for (int k = 0; k < i; k++) {
+                actual = actual.siguiente;
+            }
+            return actual.elemento;
+        }else{
+            Nodo actual = rabo;
+            for(int k = 0; k < longitud-i-1; k++) {
+                actual = actual.anterior;
+            }
+            return actual.elemento;
         }
-        return actual.elemento;
     }
 
     /**
